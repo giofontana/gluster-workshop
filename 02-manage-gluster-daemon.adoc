@@ -6,7 +6,7 @@ In this exercise, you manage the Red Hat Gluster Storage daemon. You start, stop
 
 When Red Hat Gluster Storage is installed, the glusterd service starts automatically. Use the following instructions to manually check glusterd status, stop the service, and verify its status again.
 
-    1. Check the status of the glusterd service:
+* Check the status of the glusterd service:
 
 ----
        [root@rhgs1 ~]# systemctl status glusterd
@@ -22,12 +22,12 @@ When Red Hat Gluster Storage is installed, the glusterd service starts automatic
                   └─7889 /sbin/rpc.statd
 ----
 
-    2. Manually stop glusterd:
+* Manually stop glusterd:
 ----
        [root@rhgs1 ~]# systemctl stop glusterd
 ----
 
-    3. Check the status of glusterd again:
+* Check the status of glusterd again:
 ----    
        [root@rhgs1 ~]# systemctl status glusterd
        ● glusterd.service - GlusterFS, a clustered file-system server
@@ -45,12 +45,12 @@ When Red Hat Gluster Storage is installed, the glusterd service starts automatic
 
 In this section, you restart the glusterd service and verify that it is running.
 
-    1. Manually start glusterd:
+* Manually start glusterd:
 ----
        [root@rhgs1 ~]# systemctl start glusterd
 ----
 
-    2. Check glusterd status to make sure it is running:
+* Check glusterd status to make sure it is running:
 ----
        [root@rhgs1 ~]# systemctl status glusterd
        Redirecting to /bin/systemctl status  glusterd.service
