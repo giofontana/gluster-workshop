@@ -1,0 +1,15 @@
+= Gluster Concepts Lab
+
+In this set of exercises, you explore Red Hat Gluster Storage features and concepts with local and remote storage clusters, mount volumes using multiple protocols, work with volume snapshots, and use the console to configure geo-replication.
+
+== 1. Access Lab Environment
+Perform this lab as root on the rhgs1.localdomain storage node. Remember that you must first connect to client1 before you can use SSH to access the storage nodes.
+    1. Use the SSH client of your choice to log in to client1-GUID.rhpds.opentlc.com (external name):
+       # ssh [OPENTLC-SSO-LOGIN]@client1-GUID.rhpds.opentlc.com
+        ◦ Replace GUID with the GUID provided in your provisioning email.
+        ◦ Use your OPENTLC SSO login name and your private key to authenticate.
+        ◦ If needed, you can use # sudo su - at any time to become root on the client1 system.
+    2. Log in remotely to rhgs1 host from client1:
+       [root@client1 ~]# ssh root@rhgs1
+        ◦ User: root
+        ◦ Password: Redhat12

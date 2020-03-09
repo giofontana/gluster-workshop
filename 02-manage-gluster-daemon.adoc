@@ -1,0 +1,68 @@
+== 2. Manage Gluster Daemon
+
+In this exercise, you manage the Red Hat Gluster Storage daemon. You start, stop, and check the status of the glusterd service.
+
+=== 2.1. Stop and Restart the Gluster Storage Daemon
+
+When Red Hat Gluster Storage is installed, the glusterd service starts automatically. Use the following instructions to manually check glusterd status, stop the service, and verify its status again.
+
+    1. Check the status of the glusterd service:
+
+----
+       [root@rhgs1 ~]# systemctl status glusterd
+       [green]#●# glusterd.service - GlusterFS, a clustered file-system server
+          Loaded: loaded (/usr/lib/systemd/system/glusterd.service; enabled; vendor preset: disabled)
+          Active: [green]#active# (running) since Sun 2016-08-28 18:27:02 EDT; 31min ago
+        Main PID: 6387 (glusterd)
+          CGroup: /system.slice/glusterd.service
+                  ├─6387 /usr/sbin/glusterd -p /var/run/glusterd.pid
+                  ├─7825 /usr/sbin/glusterfsd -s rhgs1 --volfile-id localvol.rhgs1.gluster-brick1 -p /var/lib/glusterd...
+                  ├─7858 /usr/sbin/glusterfs -s localhost --volfile-id gluster/nfs -p /var/lib/glusterd/nfs/run/nfs.pi...
+                  ├─7865 /usr/sbin/glusterfs -s localhost --volfile-id gluster/glustershd -p /var/lib/glusterd/gluster...
+                  └─7889 /sbin/rpc.statd
+----
+
+    2. Manually stop glusterd:
+----
+       [root@rhgs1 ~]# systemctl stop glusterd
+----
+
+    3. Check the status of glusterd again:
+----    
+       [root@rhgs1 ~]# systemctl status glusterd
+       ● glusterd.service - GlusterFS, a clustered file-system server
+          Loaded: loaded (/usr/lib/systemd/system/glusterd.service; enabled; vendor preset: disabled)
+          Active: inactive (dead) since Sun 2016-08-28 19:02:52 EDT; 17s ago
+        Main PID: 6387 (code=exited, status=0/SUCCESS)
+          CGroup: /system.slice/glusterd.service
+                  ├─7825 /usr/sbin/glusterfsd -s rhgs1 --volfile-id localvol.rhgs1.gluster-brick1 -p /var/lib/glusterd...
+                  ├─7858 /usr/sbin/glusterfs -s localhost --volfile-id gluster/nfs -p /var/lib/glusterd/nfs/run/nfs.pi...
+                  ├─7865 /usr/sbin/glusterfs -s localhost --volfile-id gluster/glustershd -p /var/lib/glusterd/gluster...
+                  └─7889 /sbin/rpc.statd
+----
+
+=== 2.2. Start Red Hat Gluster Storage Daemon
+
+In this section, you restart the glusterd service and verify that it is running.
+
+    1. Manually start glusterd:
+----
+       [root@rhgs1 ~]# systemctl start glusterd
+----
+
+    2. Check glusterd status to make sure it is running:
+----
+       [root@rhgs1 ~]# systemctl status glusterd
+       Redirecting to /bin/systemctl status  glusterd.service
+       [green]#●# glusterd.service - GlusterFS, a clustered file-system server
+          Loaded: loaded (/usr/lib/systemd/system/glusterd.service; enabled; vendor preset: disabled)
+          Active: [green]#active (running)# since Sun 2016-08-28 19:04:49 EDT; 35s ago
+         Process: 27068 ExecStart=/usr/sbin/glusterd -p /var/run/glusterd.pid (code=exited, status=0/SUCCESS)
+        Main PID: 27073 (glusterd)
+          CGroup: /system.slice/glusterd.service
+                  ├─ 7825 /usr/sbin/glusterfsd -s rhgs1 --volfile-id localvol.rhgs1.gluster-brick1 -p /var/lib/gluster...
+                  ├─27073 /usr/sbin/glusterd -p /var/run/glusterd.pid
+                  ├─27536 /usr/sbin/glusterfs -s localhost --volfile-id gluster/nfs -p /var/lib/glusterd/nfs/run/nfs.p...
+                  ├─27552 /usr/sbin/glusterfs -s localhost --volfile-id gluster/glustershd -p /var/lib/glusterd/gluste...
+                  └─27570 /sbin/rpc.statd
+----
