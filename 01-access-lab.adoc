@@ -9,7 +9,7 @@ Execute este lab com seu usuario no servidor rhgs1.localdomain. Lembre de que vo
 1 Use um cliente SSH a sua escolha e logue na estação client1-GUID.rhpds.opentlc.com (external name):
 
 ----
-       # ssh <USUARIO>@client1-0514.rhpds.opentlc.com
+# ssh <USUARIO>@client1-0514.rhpds.opentlc.com
 ----
 [NOTE]
 ====
@@ -18,9 +18,11 @@ Utilize o <USUARIO> que será informado durante o workshop pelo instrutor.
 
 2 Acesse o host rhgs<n> a partir do client1:
 
-       [root@client1 ~]# ssh root@rhgs<n>
-        ◦ Usuario: root
-        ◦ Senha: Redhat12
+----
+[root@client1 ~]# ssh root@rhgs<n>
+----
+* Usuario: root
+* Senha: Redhat12
 
 [NOTE]
 ====
