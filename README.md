@@ -1,2 +1,0 @@
-# gluster-workshop
-# gluster-workshop
