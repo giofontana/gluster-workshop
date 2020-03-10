@@ -2,7 +2,57 @@
 
 Neste conjunto de exercícios você irá explorar as funcionalidades e conceitos do Red Hat Gluster Storage com clusters locais e remotos, montar volumes usando diferentes protocolos, trabalhar com snapshots de volume e usar o console para configurar geo-replicação.
 
-== 1. Acessando o Ambiente de Laboratório
+== Overview do Laboratório
+
+Este laboratório é composto pelos seguintes servidores:
+
+.Lab Environment Systems
+[options="header"]
+|===
+|Label|FQDN|Internal IP Address|External Access
+
+|RHS_v3.X_CLIENT1
+|External: client1-0514.rhpds.opentlc.com
+Internal: client1.localdomain
+|10.100.0.101
+|SSH
+
+|RHS_v3.X_RHGS1
+|rhgs1.localdomain
+|10.100.1.11
+|N/A
+|RHS_v3.X_RHGS2
+
+|rhgs2.localdomain
+|10.100.1.12
+|N/A
+|RHS_v3.X_RHGS3
+|rhgs3.localdomain
+
+|10.100.1.13
+|N/A
+|RHS_v3.X_RHGS4
+|rhgs4.localdomain
+
+|10.100.1.14
+|N/A
+|RHS_v3.X_REMOTE_RHGS1
+|remote-rhgs1.localdomain
+|10.100.2.11
+|N/A
+
+|RHS_v3.X_REMOTE_RHGS2
+|remote-rhgs2.localdomain
+|10.100.2.12
+|N/A
+
+|===
+
+Abaixo o desenho da arquitetura:
+
+image::images/architecture.png[]
+
+== Acessando o Ambiente de Laboratório
 
 Execute este lab com seu usuario no servidor rhgs1.localdomain. Lembre de que você deve primeiro conectar no client1 antes de acessar os storage nodes.
 

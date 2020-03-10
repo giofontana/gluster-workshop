@@ -1,8 +1,8 @@
-== 2. Gluster Daemon
+== Gluster Daemon
 
 Neste exercício você irá gerenciar o daemon RH Gluster Storage. Você irá iniciar, parar e checar o status do serviço `glusterd`.
 
-=== 2.1. Parar e Reiniciar o daemon do Gluster Storage
+=== Parar e Reiniciar o daemon do Gluster Storage
 
 Quando o RH Gluster Storage é instalado o serviço `glusterd` inicia automaticamente. Use as instruções para checar o status do glusterd, parar o serviço e verificar seu status.
 
@@ -24,7 +24,7 @@ Quando o RH Gluster Storage é instalado o serviço `glusterd` inicia automatica
 
 * Pare o serviço glusterd manualmente:
 ----
-       [user@rhgs1 ~]# sudo systemctl stop glusterd
+[user@rhgs1 ~]# sudo systemctl stop glusterd
 ----
 
 * Cheque o status do glusterd novamente:
@@ -41,7 +41,7 @@ Quando o RH Gluster Storage é instalado o serviço `glusterd` inicia automatica
                   └─7889 /sbin/rpc.statd
 ----
 
-=== 2.2. Iniciar Red Hat Gluster Storage Daemon
+=== Iniciar Red Hat Gluster Storage Daemon
 
 Nesta seção, você irá reiniciar o serviço glusterd e irá verificar que esta sendo executado.
 

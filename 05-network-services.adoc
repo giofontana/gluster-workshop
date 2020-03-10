@@ -1,8 +1,8 @@
-= 6. Usando Serviços de Rede
+= Usando Serviços de Rede
 
 Neste exercício você irá montar os mesmos volumes no client1 usando `NFSv3` e `SMB`
 
-== 6.1. Montando Red Hat Gluster Storage Volume Usando NFS
+== Montando Red Hat Gluster Storage Volume Usando NFS
 
 Nesta seção você irá montar o volume `localvol` usando o protocolo NFSv3. Primeiro você irá criar um diretório chamado /mnt/nfs<USER> e montar o volume usando protocolo NFSv3.
 
@@ -30,7 +30,7 @@ Você pode usar o comando showmount -e rhgs1 para confirmar qual path NFS usar.
 
 Confirme que os 100 arquivos criados anteriormente se encontram no diretório.
 
-== 6.2. Montando Red Hat Gluster Storage Volume Usando SMB
+== Montando Red Hat Gluster Storage Volume Usando SMB
 
 Nesta seção você irá montar o mesmo volume `localvol` como um ponto de montagem usando o protocolo `SMB (CIFS)`.
 

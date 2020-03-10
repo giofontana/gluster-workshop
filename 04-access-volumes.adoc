@@ -35,7 +35,7 @@ done
 
 Veja que o client1 mostra todos os 100 arquivos no ponto de montagem.
 
-== 5.2. Examine o Layout de Arquivos no Back-End de Storage:
+== Examine o Layout de Arquivos no Back-End de Storage:
 Neste exercício prévio você confirmou que o client1 pode ver todos os 100 arquivos.
 
 1 Conecte em rhgs1 e verifique o diretório brick1:
