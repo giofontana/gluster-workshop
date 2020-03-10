@@ -1,15 +1,15 @@
-== 2. Manage Gluster Daemon
+== 2. Gluster Daemon
 
-In this exercise, you manage the Red Hat Gluster Storage daemon. You start, stop, and check the status of the glusterd service.
+Neste exercício você irá gerenciar o daemon RH Gluster Storage. Você irá iniciar, parar e checar o status do serviço `glusterd`.
 
-=== 2.1. Stop and Restart the Gluster Storage Daemon
+=== 2.1. Parar e Reiniciar o daemon do Gluster Storage
 
-When Red Hat Gluster Storage is installed, the glusterd service starts automatically. Use the following instructions to manually check glusterd status, stop the service, and verify its status again.
+Quando o RH Gluster Storage é instalado o serviço `glusterd` inicia automaticamente. Use as instruções para checar o status do glusterd, parar o serviço e verificar seu status.
 
-* Check the status of the glusterd service:
+* Cheque o status do serviço glusterd:
 
 ----
-       [root@rhgs1 ~]# systemctl status glusterd
+       [user@rhgs1 ~]# sudo systemctl status glusterd
        [green]#●# glusterd.service - GlusterFS, a clustered file-system server
           Loaded: loaded (/usr/lib/systemd/system/glusterd.service; enabled; vendor preset: disabled)
           Active: [green]#active# (running) since Sun 2016-08-28 18:27:02 EDT; 31min ago
@@ -22,14 +22,14 @@ When Red Hat Gluster Storage is installed, the glusterd service starts automatic
                   └─7889 /sbin/rpc.statd
 ----
 
-* Manually stop glusterd:
+* Pare o serviço glusterd manualmente:
 ----
-       [root@rhgs1 ~]# systemctl stop glusterd
+       [user@rhgs1 ~]# sudo systemctl stop glusterd
 ----
 
-* Check the status of glusterd again:
+* Cheque o status do glusterd novamente:
 ----    
-       [root@rhgs1 ~]# systemctl status glusterd
+       [user@rhgs1 ~]# sudo systemctl status glusterd
        ● glusterd.service - GlusterFS, a clustered file-system server
           Loaded: loaded (/usr/lib/systemd/system/glusterd.service; enabled; vendor preset: disabled)
           Active: inactive (dead) since Sun 2016-08-28 19:02:52 EDT; 17s ago
@@ -41,18 +41,18 @@ When Red Hat Gluster Storage is installed, the glusterd service starts automatic
                   └─7889 /sbin/rpc.statd
 ----
 
-=== 2.2. Start Red Hat Gluster Storage Daemon
+=== 2.2. Iniciar Red Hat Gluster Storage Daemon
 
-In this section, you restart the glusterd service and verify that it is running.
+Nesta seção, você irá reiniciar o serviço glusterd e irá verificar que esta sendo executado.
 
-* Manually start glusterd:
+* Iniciar glusterd manualmente:
 ----
-       [root@rhgs1 ~]# systemctl start glusterd
+       [user@rhgs1 ~]# sudo systemctl start glusterd
 ----
 
-* Check glusterd status to make sure it is running:
+* Checar o status do glusterd para verificar que esta sendo executado:
 ----
-       [root@rhgs1 ~]# systemctl status glusterd
+       [user@rhgs1 ~]# sudo systemctl status glusterd
        Redirecting to /bin/systemctl status  glusterd.service
        [green]#●# glusterd.service - GlusterFS, a clustered file-system server
           Loaded: loaded (/usr/lib/systemd/system/glusterd.service; enabled; vendor preset: disabled)

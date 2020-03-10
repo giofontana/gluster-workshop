@@ -1,15 +1,14 @@
-= 3. Examine Primary (Local) Storage Cluster
+= 3. Examine o Cluster Primário - Local
+ 
+Neste exercício você irá examinar um volume "two-way replica" chamado localvol e verificará seu status. Este volume foi criado usando os 4 primeiro hosts rhgs1, rhgs2, rhgs2, rhgs3 e rhgs4.
 
-In this exercise, you examine a two-way replicated volume called localvol and verify its status from the rhgs1 storage node. This volume was created using the four primary hosts rhgs1, rhgs2, rhgs3, and rhgs4.
+== 3.1 Arquivo de Configuração
 
-== 3.1. View Configuration File
+O arquivo de configuração contem a parametrização para criação de RH Gluster Storage bricks usando o device /dev/vdb em cada nó, montando-os em /gluster/brick1, formatado como file system XFS.
 
-The configuration file requests the creation of Red Hat Gluster Storage bricks using the /dev/vdb drive on each node, mounting them under /gluster/brick1, formatted as an XFS file system.
-
-    1. As root on rhgs1, view the configuration file used by gdeploy to set up the primary Red Hat Gluster Storage cluster and localvol volume:
+    1. Visualize o arquivo de configuração usado pelo gdeploy para criar o volume localvol:
 ----
-       [root@rhgs1 ~]# cd gdeploy_conf
-       [root@rhgs1 gdeploy_conf]# cat local.conf
+       [user@rhgs1]# sudo cat /home/gdeploy_conf/local.conf
        [hosts]
        rhgs1
        rhgs2
@@ -35,40 +34,37 @@ The configuration file requests the creation of Red Hat Gluster Storage bricks u
        # arbiter_count=2
        force=yes
 ----       
-    2. Review the [hosts] and [devices] sections carefully.
+    2. Analise as seções [hosts] e [devices] cuidadosamente.
 
-    3. Note that in the [volume] section, replica=yes and replica_count=2 define localvol as a two-way replicated volume.
+    3. Note que na seção [volume], replica=yes e replica_count=2 define localvol como um volume "two-way replicated".
 
-== 3.2. Verify the Volume
+== 3.2 Verificação do Volume
 
-    1. Display the block storage devices on rhgs1 to confirm that the /gluster/brick1 brick is mounted on /dev/vdb:
+    1. Veja os block devices no servidor para confirmar que /gluster/brick1 brick esta montado em /dev/vdb:
 ----
-       [root@rhgs1 gdeploy_conf]# lsblk
+       [user@rhgs1]# lsblk
 ----
 
-    2. Verify the cluster’s status:
+    2. Verifique o status do cluster:
 ----    
        # gluster peer status
 ----       
-    3. Confirm that the Red Hat Gluster Storage volume is started and has a Started status:
+    3. Confirme que o volume do Red Hat Gluster Storageesta iniciado e tem o status "Started":
 ----    
        # gluster volume info
 ----       
-    4. Review your output and verify that it looks similar to this:
 
-      TODO
+= 4. Examine o Storage Cluster Secundário (Remoto)
 
-= 4. Examine Secondary (Remote) Storage Cluster
+Neste exercício você irá examinar o segundo volume "two-way replicated" chamado remotevol em remote-rhgs1 e remote-rhgs2.
 
-In this exercise, you examine a second two-way replicated volume called remotevol from the remote-rhgs1 storage node. This volume was created with bricks on the two remote hosts remote-rhgs1 and remote-rhgs2.
+== 4.1. Arquivo de Configuração
 
-== 4.1. View Configuration File
+O arquivo de configuração requisita a criação dos RH Gluster Storage bricks usando os devices /dev/vdb e /dev/vdc em cada nó, montando em /gluster/brick1 e /gluster/brick2, formatados como XFS
 
-The configuration file requests the creation of Red Hat Gluster Storage bricks using /dev/vdb and /dev/vdc drives on each storage node, mounting them at /gluster/brick1 and /gluster/brick2, formatted as XFS file systems.
-
-    1. As root on rhgs1, view the configuration file used by gdeploy to set up the secondary Red Hat Gluster Storage cluster and remotevol volume:
+    1. Visualize o arquivo de configuração usado pelo gdeploy para criar o volume remotevol:
 ----
-       [root@rhgs1 gdeploy_conf]# cat remote.conf
+       [user@rhgs1]# sudo cat /home/gdeploy_conf/remote.conf
        [hosts]
        remote-rhgs1
        remote-rhgs2
@@ -93,30 +89,27 @@ The configuration file requests the creation of Red Hat Gluster Storage bricks u
        # arbiter_count=2
        force=yes
 ----       
-    2. Review the [hosts] and [devices] sections.
+    2. Analise as seções [hosts] e [devices] cuidadosamente.
 
-    3. Note that in the [volume] section, replica=yes and replica_count=2 define remotevol as a two-way replicated volume.
+    3. Note que na seção [volume], replica=yes e replica_count=2 define remotevol como um volume "two-way replicated".
 
-== 4.2. Verify the Volume
+== 4.2. Verifique o volume:
 
-    1. Connect to remote-rhgs1 using SSH to check the status:
+    1. Conecte no servidor remote-rhgs1 usando SSH para verificar o status:
 ----
-       root@rhgs1 gdeploy_conf]# ssh root@remote-rhgs1
+       [user@rhgs1]# ssh user@remote-rhgs1
 ----
 
-    2. Display the block storage devices on remote-rhsg1 to confirm that both bricks were created and mounted as /gluster/brick[1,2]:
+    2. Verifique os block devices no servidor remote-rhsg1 foram criados e montados em /gluster/brick[1,2]:
 ----
        [root@remote-rhgs1 ~]# lsblk
 ----
 
-    3. Verify the status of the cluster:
+    3. Verifique o status do cluster:
 ----
        # gluster peer status
 ----
-    4. Confirm that the gluster volume is created and that its status is Started:
+    4. Confirme que o volume do gluster foi criado e seu status é "Started":
 ----
        # gluster volume info
 ----       
-    5. Review your output and verify that it looks similar to this:
-       
-TODO:

@@ -1,0 +1,69 @@
+= Acesso de Volumes a partir de um Client
+
+Neste exercício você irá acessar os volumes localvol e remotevol, a partir de estações cliente.
+
+1 Monte o localvol e remotevol usando o procolo nativo:
+
+----
+# user_id=$(whoami)
+# sudo mkdir /mnt/local$userid
+# sudo mkdir /mnt/remote$userid
+# mount -t glusterfs -oacl rhgs1:/localvol /mnt/local$userid
+# mount -t glusterfs -oacl remote-rhgs1:/remotevol /mnt/remote$userid
+----
+
+2 Verifique que os volumes estão montados:
+----
+# df -h
+----
+
+[NOTE]
+====
+O passo abaixo será feito apenas pelo instrutor.
+====
+3 Crie um diretório de teste local no ponto de montagem localvol e crie 100 arquivos
+----
+# cd /mnt/local
+# mkdir test1
+# cd test1
+# for i in `seq 1 100`
+do
+echo hello$i > file$i
+done
+# ls
+----
+
+Veja que o client1 mostra todos os 100 arquivos no ponto de montagem.
+
+== 5.2. Examine o Layout de Arquivos no Back-End de Storage:
+Neste exercício prévio você confirmou que o client1 pode ver todos os 100 arquivos.
+
+1 Conecte em rhgs1 e verifique o diretório brick1:
+----
+[user@client1] ssh root@rhgs1
+[root@rhgs1] cd /gluster/brick1/test1
+[root@rhgs1] ls
+[root@rhgs1] ls | wc -l
+[root@rhgs1] exit
+----
+
+2 Verifique que você vê os mesmos 54 arquivos no servidor rhgs2
+----
+[user@client1] ssh root@rhgs2
+[root@rhgs2] cd /gluster/brick1/test1
+[root@rhgs2] ls
+[root@rhgs2] ls | wc -l
+[root@rhgs2] exit
+----
+
+[NOTE]
+====
+Lembre que rhgs1 e rhgs2 formam um par espelhado e contem os mesmos arquivos.
+====
+
+3 Verifique que os diretorios em rhgs3/rhgs4 contem os 46 arquivos remanescentes:
+
+[NOTE]
+====
+Como o volume foi configurado como two-way replication, os arquivos em rhgs1 e rhgs2 são identicos, assim como os arquivos que estão em rhgs3 e rhgs4
+====
