@@ -66,13 +66,13 @@ Execute este lab com seu usuario no servidor rhgs1.localdomain. Lembre de que vo
 Utilize o <USUARIO> que será informado durante o workshop pelo instrutor.
 ====
 
-2 Acesse o host rhgs<n> a partir do client1:
+2 Acesse o host rhgs1 a partir do client1:
 
 ----
-[root@client1 ~]# ssh root@rhgs<n>
+[root@client1 ~]# ssh root@rhgs1
 ----
 * Usuario: root
-* Senha: Redhat12
+* Senha: 
 
 [NOTE]
 ====
