@@ -1,15 +1,15 @@
 = Acesso de Volumes a partir de um Client
 
-Neste exercício você irá acessar os volumes localvol e remotevol, a partir de estações cliente.
+Neste exercício você irá acessar os volumes glustervol e remotevol, a partir de estações cliente.
 
-1 Monte o localvol e remotevol usando o procolo nativo:
+1 Monte o glustervol e remotevol usando o procolo nativo:
 
 ----
 # user_id=$(whoami)
-# sudo mkdir /mnt/local$userid
-# sudo mkdir /mnt/remote$userid
-# mount -t glusterfs -oacl rhgs1:/localvol /mnt/local$userid
-# mount -t glusterfs -oacl remote-rhgs1:/remotevol /mnt/remote$userid
+# sudo mkdir /mnt/local$user_id
+# sudo mkdir /mnt/remote$user_id
+# sudo mount -t glusterfs -oacl rhgs1:/glustervol /mnt/local$user_id
+# sudo mount -t glusterfs -oacl remote-rhgs1:/remotevol /mnt/remote$user_id
 ----
 
 2 Verifique que os volumes estão montados:
@@ -17,11 +17,7 @@ Neste exercício você irá acessar os volumes localvol e remotevol, a partir de
 # df -h
 ----
 
-[NOTE]
-====
-O passo abaixo será feito apenas pelo instrutor.
-====
-3 Crie um diretório de teste local no ponto de montagem localvol e crie 100 arquivos
+3 Crie um diretório de teste local no ponto de montagem glustervol e crie 100 arquivos
 ----
 # cd /mnt/local
 # mkdir test1

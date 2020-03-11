@@ -1,0 +1,64 @@
+= Configurando Geo Replicação
+
+Nesta seção você irá configurar geo-replicação e demonstrar o seu funcionamento.
+
+1 Configurando chave para PEM para comunicação entre os nodes para geo-replicação.
+
+----
+[root@client1 ~]# ssh root@rhgs1
+[root@rhgs1 ~]# gluster system:: execute gsec_create
+Common secret pub file present at /var/lib/glusterd/geo-replication/common_secret.pem.pub
+Create the geo-replication session on rhgs1 using the push-pem option to perform the necessary pem-file setup on the slave nodes:
+----
+
+2 Crie a sessão de geo-replication em rhgs1 usando a opção push-pem para realizar o setup necessário de arquivos pem nos nodes slaves:
+----
+[root@rhgs1 ~]# gluster volume geo-replication localvol remote-rhgs2::remotevol create push-pem
+Creation of the geo-replication session between localvol and remote-rhgs2::remotevol is now complete.
+----
+
+3 Inicie a replicação:
+
+----
+[root@rhgs1 ~]# gluster volume geo-replication localvol remote-rhgs2::remotevol start.
+----
+
+4 Veja o status da replicação:
+
+----
+[root@rhgs1 ~]# gluster volume geo-replication localvol remote-rhgs2::remotevol status.
+----
+
+Espere um retorno semelhante a este:
+
+----
+MASTER NODE    MASTER VOL    MASTER BRICK       SLAVE USER    SLAVE                      SLAVE NODE      STATUS     CRAWL STATUS       LAST_SYNCED
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+rhgs1          localvol      /gluster/brick1    root          remote-rhgs2::remotevol    remote-rhgs1    Active     Changelog Crawl    2019-05-10 07:49:25
+rhgs2          localvol      /gluster/brick1    root          remote-rhgs2::remotevol    remote-rhgs2    Passive    N/A                N/A
+rhgs4          localvol      /gluster/brick1    root          remote-rhgs2::remotevol    remote-rhgs2    Passive    N/A                N/A
+rhgs3          localvol      /gluster/brick1    root          remote-rhgs2::remotevol    remote-rhgs1    Active     Changelog Crawl    2019-05-10 07:49:29
+
+5 Testando a replicação
+
+Abra duas sessões na maquina client-1. Em uma das sessões execute o comando `watch ls -al /mnt/remote` para ver o conteudo em tempo real:
+----
+Every 2.0s: ls -al /mnt/remote/                    Mon Feb  9 17:55:20 2015
+
+total 4
+drwxr-xr-x. 3 root root   46 Feb  9 17:55 .
+drwxr-xr-x. 4 root root 4096 Feb  9 17:44 ..
+----
+
+Em outra sessão, execute o comando `touch /mnt/local/testfile` para criar um arquivo no diretório de origem.
+
+Na primeira sessão confirmque que o arquivo foi automaticamente criado no outro volume:
+
+----
+Every 2.0s: ls -al /mnt/remote/                    Mon Feb  9 17:58:20 2015
+
+total 4
+drwxr-xr-x. 3 root root   46 Feb  9 17:55 .
+drwxr-xr-x. 4 root root 4096 Feb  9 17:44 ..
+-rw-r--r--. 1 root root    0 Feb  9 17:57 testfile
+----

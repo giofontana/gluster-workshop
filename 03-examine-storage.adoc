@@ -8,7 +8,8 @@ O arquivo de configuração contem a parametrização para criação de RH Glust
 
 1 Visualize o arquivo de configuração usado pelo gdeploy para criar o volume localvol:
 ----
-[user@rhgs1]# sudo cat /home/gdeploy_conf/local.conf
+[user@client1]# ssh rhgs1
+[user@rhgs1]# sudo cat /root/gdeploy_conf/local.conf
 [hosts]
 rhgs1
 rhgs2
@@ -50,7 +51,7 @@ force=yes
 # gluster peer status
 ----       
 
-3 Confirme que o volume do Red Hat Gluster Storageesta iniciado e tem o status "Started":
+3 Confirme que o volume do Red Hat Gluster Storage esta iniciado e tem o status "Started":
 ----    
 # gluster volume info
 ----       
@@ -65,7 +66,7 @@ O arquivo de configuração requisita a criação dos RH Gluster Storage bricks 
 
 1 Visualize o arquivo de configuração usado pelo gdeploy para criar o volume remotevol:
 ----
-[user@rhgs1]# sudo cat /home/gdeploy_conf/remote.conf
+[user@rhgs1]# sudo cat /root/gdeploy_conf/remote.conf
 [hosts]
 remote-rhgs1
 remote-rhgs2
@@ -98,12 +99,12 @@ force=yes
 
 1 Conecte no servidor remote-rhgs1 usando SSH para verificar o status:
 ----
-[user@rhgs1]# ssh user@remote-rhgs1
+[user@rhgs1]# ssh remote-rhgs1
 ----
 
 2 Verifique os block devices no servidor remote-rhsg1 foram criados e montados em /gluster/brick[1,2]:
 ----
-       [root@remote-rhgs1 ~]# lsblk
+[root@remote-rhgs1 ~]# lsblk
 ----
 
 3 Verifique o status do cluster:
