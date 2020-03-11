@@ -9,8 +9,8 @@ Nesta seção você irá montar o volume `glustervol` usando o protocolo NFSv3. 
 1 No client1, monte o glustervol usando NFS:
 ----
 # user_id=$(whoami)
-# sudo mkdir /mnt/nfs$userid
-# sudo mount -t nfs -o vers=3,mountproto=tcp rhgs1:/glustervol /mnt/nfs$userid
+# sudo mkdir /mnt/nfs$user_id
+# sudo mount -t nfs -o vers=3,mountproto=tcp rhgs1:/glustervol /mnt/nfs$user_id
 ----
 [NOTE]
 ====
@@ -24,7 +24,7 @@ Você pode usar o comando showmount -e rhgs1 para confirmar qual path NFS usar.
 
 3 Va para o diretorio /mnt/nfs<USER>/test1 and list the contents:
 ----
-# /mnt/nfs$userid/test1
+# /mnt/nfs$user_id/test1
 # ls
 ----
 
