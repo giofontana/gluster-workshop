@@ -4,13 +4,13 @@ Neste exercício você irá montar os mesmos volumes no client1 usando `NFSv3` e
 
 == Montando Red Hat Gluster Storage Volume Usando NFS
 
-Nesta seção você irá montar o volume `localvol` usando o protocolo NFSv3. Primeiro você irá criar um diretório chamado /mnt/nfs<USER> e montar o volume usando protocolo NFSv3.
+Nesta seção você irá montar o volume `glustervol` usando o protocolo NFSv3. Primeiro você irá criar um diretório chamado /mnt/nfs<USER> e montar o volume usando protocolo NFSv3.
 
-1 No client1, monte o localvol usando NFS:
+1 No client1, monte o glustervol usando NFS:
 ----
 # user_id=$(whoami)
 # sudo mkdir /mnt/nfs$userid
-# sudo mount -t nfs -o vers=3,mountproto=tcp rhgs1:/localvol /mnt/nfs$userid
+# sudo mount -t nfs -o vers=3,mountproto=tcp rhgs1:/glustervol /mnt/nfs$userid
 ----
 [NOTE]
 ====
@@ -32,7 +32,7 @@ Confirme que os 100 arquivos criados anteriormente se encontram no diretório.
 
 == Montando Red Hat Gluster Storage Volume Usando SMB
 
-Nesta seção você irá montar o mesmo volume `localvol` como um ponto de montagem usando o protocolo `SMB (CIFS)`.
+Nesta seção você irá montar o mesmo volume `glustervol` como um ponto de montagem usando o protocolo `SMB (CIFS)`.
 
 1 No client1, instale os pacotes do cliente Samba:
 ----
@@ -48,7 +48,7 @@ Nesta seção você irá montar o mesmo volume `localvol` como um ponto de monta
 
 .Listar volumes usando Samba
 image::images/samba-list.png[]
-
+    
 [NOTE]
 ====
 A configuração de SMB adiciona "gluster-" ao inicio do nome do volume.
@@ -59,8 +59,8 @@ A configuração de SMB adiciona "gluster-" ao inicio do nome do volume.
 ----
 # user_id=$(whoami)
 # mkdir /mnt/cifs$user_id
-# mount -t cifs -ouser=samba-user //rhgs1/gluster-localvol /mnt/cifs$user_id
-Password for samba-user@//rhgs1/gluster-localvol:  ********
+# mount -t cifs -ouser=samba-user //rhgs1/gluster-glustervol /mnt/cifs$user_id
+Password for samba-user@//rhgs1/gluster-glustervol:  ********
 # df -h
 # cd /mnt/cifs$user_id/test1
 # ls
@@ -69,7 +69,7 @@ Password for samba-user@//rhgs1/gluster-localvol:  ********
 * User: samba-user
 * Password: r3dh4t1!
 
-Note que o `df -h` retorna o mesmo volume (localvol) disponível do client1 esta agora disponível em três pontos de montagem usando três protocolos diferentes:
+Note que o `df -h` retorna o mesmo volume (glustervol) disponível do client1 esta agora disponível em três pontos de montagem usando três protocolos diferentes:
 
 * Native Client mount (glusterfs direct mount)
 * NFSv3
