@@ -38,7 +38,8 @@ Neste exercício prévio você confirmou que o client1 pode ver todos os 100 arq
 1 Conecte em rhgs1 e verifique o diretório brick1:
 ----
 [user@client1] ssh root@rhgs1
-[root@rhgs1] cd /gluster/brick1/test1
+[user@rhgs1] user_id=$(whoami)
+[user@rhgs1] cd /gluster/brick1/test$user_id
 [root@rhgs1] ls
 [root@rhgs1] ls | wc -l
 [root@rhgs1] exit
@@ -47,10 +48,11 @@ Neste exercício prévio você confirmou que o client1 pode ver todos os 100 arq
 2 Verifique que você vê os mesmos 54 arquivos no servidor rhgs2
 ----
 [user@client1] ssh root@rhgs2
-[root@rhgs2] cd /gluster/brick1/test1
-[root@rhgs2] ls
-[root@rhgs2] ls | wc -l
-[root@rhgs2] exit
+[user@rhgs2] user_id=$(whoami)
+[user@rhgs2] cd /gluster/brick1/test$user_id
+[user@rhgs2] ls
+[user@rhgs2] ls | wc -l
+[user@rhgs2] exit
 ----
 
 [NOTE]
