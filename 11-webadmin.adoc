@@ -1,0 +1,161 @@
+= Web Administration
+
+== Instalar Web Admin
+
+Acessar via ssh o servidor console
+
+----
+# ssh console
+----
+
+Gerar chave e compartilhar entre os servidores:
+----
+[root@console-repl ~]# ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:3y1n6p68/XKZgTcaFf45ykmkDpmaWqTVy21wAns8e+Y root@console-repl
+The key's randomart image is:
++---[RSA 2048]----+
+|                 |
+|               . |
+|       .      . .|
+|        =    . o |
+|       +SBo.o o o|
+|      + o=Oo = *.|
+|     . .o++== X *|
+|      .o  =o %.o.|
+|     ..    EB..+.|
++----[SHA256]-----+
+
+[root@console-repl ~]#ssh-copy-id root@rhgs1
+[root@console-repl ~]#ssh-copy-id root@rhgs2
+[root@console-repl ~]#ssh-copy-id root@rhgs3
+[root@console-repl ~]#ssh-copy-id root@rhgs4
+[root@console-repl ~]#ssh-copy-id root@client1-84b1.rhpds.opentlc.com
+----
+
+Instalar pacotes do Ansible e tendrl-ansible:
+----
+[root@console-repl ~]#yum -y install ansible
+[root@console-repl ~]#yum -y install tendrl-ansible
+
+----
+
+Criar um novo arquivo `inventory` com o conteudo abaixo, mudando as variaveis abaixo:
+    * tendrl_server
+    * etcd_fqdn
+    * graphite_fqdn
+
+Arquivo `inventory`:
+----
+# This is an example of minimal tendrl-ansible host inventory file, aligned
+# with instructions in README.md file. For description of installation steps
+# and full list of ansible variables, see the README.md file and readme files
+# of tendrl-ansible roles.
+# This example includes 4 *Tendrl Storage Nodes* (GlusterFS servers) and one
+# Tendrl server.
+
+[gluster_servers]
+rhgs1.localdomain
+rhgs2.localdomain
+rhgs3.localdomain
+rhgs4.localdomain
+
+[tendrl_server]
+console-f95b.rhpds.opentlc.com
+
+[all:vars]
+
+# Mandatory variables. In this example, 192.0.2.1 is ip address of tendrl
+# server, tendrl.example.com is a hostname of tendrl server and
+# tendrl.example.com hostname is translated to 192.0.2.1 ip address.
+# Note the eth0 IP address of console for etcd_ip_adress
+etcd_ip_address=10.100.0.3
+# Note the console FQDN for etcd_fqdn
+etcd_fqdn=console-f95b.rhpds.opentlc.com
+# Note the console FQDN for graphite_fqdn
+graphite_fqdn=console-f95b.rhpds.opentlc.com
+#configure_firewalld_for_tendrl=True
+
+# Uncomment and tweak the following options when direct ssh login of root user
+# is not allowed and you are connecting via non-root cloud-user account, which
+# can leverage sudo to run any command as root without any password.
+#ansible_become=yes
+#ansible_user=cloud-user
+
+# Place for additional configuration ansible variables described in readme
+# files of tendrl-ansible roles.
+----
+
+Verifique que os hosts estão acessíveis pelo ansible:
+
+----
+[root@console-repl ~]#ansible -i inventory -m ping all
+
+rhgs2.localdomain | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+rhgs3.localdomain | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+rhgs1.localdomain | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+rhgs4.localdomain | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+console-aefa.rhpds.opentlc.com | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+----
+
+Inicie e configure o firewal:
+
+----
+[root@console-repl ~]#ansible gluster_servers -i inventory -a "systemctl enable firewalld"
+[root@console-repl ~]#ansible gluster_servers -i inventory -a "systemctl start firewalld"
+[root@console-repl ~]#ansible gluster_servers -i inventory -a "systemctl status firewalld"
+----
+
+Copie os arquivos site.yml e prechecks.yml:
+----
+[root@console-repl ~]#cp /usr/share/doc/tendrl-ansible-1.6.3/site.yml .
+[root@console-repl ~]#cp /usr/share/doc/tendrl-ansible-1.6.3/prechecks.yml .
+----
+
+Execute os playbooks:
+----
+[root@console-repl ~]#ansible-playbook -i inventory  prechecks.yml
+
+PLAY RECAP *************************************************************************************************************************
+console-REPL.rhpds.opentlc.com : ok=12   changed=0    unreachable=0    failed=0
+localhost                  : ok=3    changed=0    unreachable=0    failed=0
+rhgs1.localdomain          : ok=8    changed=0    unreachable=0    failed=0
+rhgs2.localdomain          : ok=8    changed=0    unreachable=0    failed=0
+rhgs3.localdomain          : ok=8    changed=0    unreachable=0    failed=0
+rhgs4.localdomain          : ok=8    changed=0    unreachable=0    failed=0
+Run the Ansible Playbook to install and configure the Web Administration server:
+
+[root@console-repl ~]#ansible-playbook -i inventory site.yml
+
+
+PLAY RECAP *************************************************************************************************************************
+console-REPL.rhpds.opentlc.com : ok=63   changed=52   unreachable=0    failed=0
+rhgs1.localdomain          : ok=16   changed=9    unreachable=0    failed=0
+rhgs2.localdomain          : ok=16   changed=9    unreachable=0    failed=0
+rhgs3.localdomain          : ok=16   changed=9    unreachable=0    failed=0
+rhgs4.localdomain          : ok=16   changed=9    unreachable=0    failed=0
+When the installation is completed, you are able to access the Web Administration as the next steps show.
+----
+
+Logue no Web Admin: http://console-f95b.rhpds.opentlc.com

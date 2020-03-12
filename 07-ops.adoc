@@ -1,0 +1,134 @@
+= Operações Comuns de Administração
+
+== Removendo volumes
+
+Para remover volumes o seguinte procedimento deve ser aplicado:
+
+----
+[root@rhgs1 gdeploy_conf]# gluster volume stop localvol
+Stopping volume will make its data inaccessible. Do you want to continue? (y/n) y
+volume stop: localvol: success
+
+[root@rhgs1 gdeploy_conf]# gluster volume delete localvol
+Deleting volume will erase all information about the volume. Do you want to continue? (y/n) y
+volume delete: localvol: success
+----
+
+== Criando volumes distribuídos
+
+[root@rhgs1 gdeploy_conf]# gluster volume create distvol rhgs1:/gluster/brick1/distvol rhgs2:/gluster/brick1/distvol rhgs3:/gluster/brick1/distvol rhgs4:/gluster/brick1/distvol
+volume create: distvol: success: please start the volume to access data
+
+[root@rhgs1 gdeploy_conf]# gluster volume start distvol
+volume start: distvol: success
+
+[root@rhgs1 gdeploy_conf]# gluster volume info
+ 
+Volume Name: distvol
+Type: Distribute
+Volume ID: 151fd750-7fd4-4ae8-8efb-628b447c3555
+Status: Started
+Snapshot Count: 0
+Number of Bricks: 4
+Transport-type: tcp
+Bricks:
+Brick1: rhgs1:/gluster/brick1/distvol
+Brick2: rhgs2:/gluster/brick1/distvol
+Brick3: rhgs3:/gluster/brick1/distvol
+Brick4: rhgs4:/gluster/brick1/distvol
+Options Reconfigured:
+transport.address-family: inet
+nfs.disable: on
+
+
+[NOTE]
+====
+O erro abaixo pode ser apresentado caso os bricks já tiverem sido utilizados: +
+----
+    volume create: distvol: failed: parent directory /gluster/brick1 is already part of a volume` +
+----
+
+Neste caso execute os comandos abaixo em todos os servidores para limpar os metadados do gluster: +
+----
+    setfattr -x trusted.glusterfs.volume-id /gluster/brick1/
+    setfattr -x trusted.gfid /gluster/brick1/
+    rm -rf /gluster/brick1/.glusterfs
+----
+
+Os comandos devem ser executados em todos os servidores, você pode utilizar Ansible Ad-hoc para facilitar este trabalho:
+----
+    ansible -i local.conf hosts -m shell -a "setfattr -x trusted.glusterfs.volume-id /gluster/brick1/"
+    ansible -i local.conf hosts -m shell -a "setfattr -x trusted.gfid /gluster/brick1/"
+    ansible -i local.conf hosts -m file -a "name='/gluster/brick1/.glusterfs' state=absent"
+----
+====
+
+== Criando volumes distribuídos-replicados
+
+[NOTE]
+====
+Antes de iniciar o exercício abaixo, delete o volume distvol criado anteriormente, usando o procedimento documentado no inicio deste procedimento.
+====
+
+----
+[root@rhgs1 gdeploy_conf]# gluster volume create mirrorvol replica 2 rhgs1:/gluster/brick1/mirrorvol rhgs2:/gluster/brick1/mirrorvol rhgs3:/gluster/brick1/mirrorvol rhgs4:/gluster/brick1/mirrorvol
+Replica 2 volumes are prone to split-brain. Use Arbiter or Replica 3 to avoid this.
+Do you still want to continue?
+ (y/n) y
+volume create: mirrorvol: success: please start the volume to access data
+
+[root@rhgs1 gdeploy_conf]# gluster volume start mirrorvol
+volume start: mirrorvol: success
+
+[root@rhgs1 gdeploy_conf]# gluster volume info mirrorvol
+ 
+Volume Name: mirrorvol
+Type: Distributed-Replicate
+Volume ID: 641a65ce-e288-4e75-b197-268114c6e103
+Status: Started
+Snapshot Count: 0
+Number of Bricks: 2 x 2 = 4
+Transport-type: tcp
+Bricks:
+Brick1: rhgs1:/gluster/brick1/mirrorvol
+Brick2: rhgs2:/gluster/brick1/mirrorvol
+Brick3: rhgs3:/gluster/brick1/mirrorvol
+Brick4: rhgs4:/gluster/brick1/mirrorvol
+Options Reconfigured:
+transport.address-family: inet
+nfs.disable: on
+performance.client-io-threads: off
+----
+
+== Removendo nodes de um cluster
+
+----
+[root@rhgs1 gdeploy_conf]# ssh remote-rhgs1.localdomain
+[root@remote-rhgs1 ~]# gluster peer status
+Number of Peers: 1
+
+Hostname: remote-rhgs2
+Uuid: e2c4b72e-c84f-4d03-bd1d-0be43ce29830
+State: Peer in Cluster (Connected)
+
+[root@remote-rhgs1 ~]#  gluster peer detach remote-rhgs2
+peer detach: success
+
+[root@remote-rhgs1 ~]# gluster peer status
+Number of Peers: 0
+----
+
+== Adicionando nodes em um cluster
+
+----
+[root@remote-rhgs1 ~]# gluster peer status
+Number of Peers: 0
+[root@remote-rhgs1 ~]# gluster peer probe remote-rhgs2
+peer probe: success. 
+[root@remote-rhgs1 ~]# gluster peer status
+Number of Peers: 1
+
+Hostname: remote-rhgs2
+Uuid: e2c4b72e-c84f-4d03-bd1d-0be43ce29830
+State: Peer in Cluster (Connected)
+----

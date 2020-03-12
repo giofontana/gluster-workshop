@@ -1,0 +1,195 @@
+= Snapshots
+
+Habilitando snapshots:
+
+----
+[root@rhgs1 ~]# gluster volume set localvol server.allow-insecure on
+volume set: success
+[root@rhgs1 ~]# gluster volume info localvol
+ 
+Volume Name: localvol
+Type: Distributed-Replicate
+Volume ID: 811be0b3-81e8-4327-9e76-84a72b60694c
+Status: Started
+Snapshot Count: 0
+Number of Bricks: 2 x 2 = 4
+Transport-type: tcp,rdma
+Bricks:
+Brick1: rhgs1:/gluster/brick1
+Brick2: rhgs2:/gluster/brick1
+Brick3: rhgs3:/gluster/brick1
+Brick4: rhgs4:/gluster/brick1
+Options Reconfigured:
+server.allow-insecure: on
+changelog.changelog: on
+geo-replication.ignore-pid-check: on
+geo-replication.indexing: on
+nfs.disable: on
+performance.client-io-threads: off
+
+----
+
+Criar snapshots:
+----
+[root@rhgs1 ~]# gluster snapshot create snap1 localvol no-timestamp
+snapshot create: success: Snap snap1 created successfully
+----
+
+Listar todos os snapshots:
+
+----
+[root@rhgs1 ~]# gluster snapshot list localvol
+snap1
+----
+
+Obter informações do snapshot:
+----
+[root@rhgs1 ~]# gluster snapshot info snap1
+Snapshot                  : snap1
+Snap UUID                 : c2a09d31-a98a-42c4-9ed0-914d9e97be51
+Created                   : 2020-03-12 00:43:23
+Snap Volumes:
+
+	Snap Volume Name          : 244fcf91891345888123a8f12e745b10
+	Origin Volume name        : localvol
+	Snaps taken for localvol      : 1
+	Snaps available for localvol  : 255
+	Status                    : Stopped
+ 
+
+----
+
+Note que o status do snapshot é "Stopped" por padrão.
+
+Habilitar snapshot:
+----
+[root@rhgs1 ~]# gluster snapshot activate snap1
+Snapshot activate: snap1: Snap activated successfully
+----
+
+Obter status do snapshot:
+----
+[root@rhgs1 ~]# gluster snapshot status snap1
+
+Snap Name : snap1
+Snap UUID : c2a09d31-a98a-42c4-9ed0-914d9e97be51
+
+	Brick Path        :   rhgs1:/run/gluster/snaps/244fcf91891345888123a8f12e745b10/brick1
+	Volume Group      :   GLUSTER_vg1
+	Brick Running     :   Yes
+	Brick PID         :   1014
+	Data Percentage   :   0.06
+	LV Size           :   <99.50g
+
+
+	Brick Path        :   rhgs2:/run/gluster/snaps/244fcf91891345888123a8f12e745b10/brick2
+	Volume Group      :   GLUSTER_vg1
+	Brick Running     :   Yes
+	Brick PID         :   17881
+	Data Percentage   :   0.06
+	LV Size           :   <99.50g
+
+
+	Brick Path        :   rhgs3:/run/gluster/snaps/244fcf91891345888123a8f12e745b10/brick3
+	Volume Group      :   GLUSTER_vg1
+	Brick Running     :   Yes
+	Brick PID         :   20893
+	Data Percentage   :   0.06
+	LV Size           :   <99.50g
+
+
+	Brick Path        :   rhgs4:/run/gluster/snaps/244fcf91891345888123a8f12e745b10/brick4
+	Volume Group      :   GLUSTER_vg1
+	Brick Running     :   Yes
+	Brick PID         :   17881
+	Data Percentage   :   0.06
+	LV Size           :   <99.50g
+----
+
+Veja a diferença entre os LVOLs antes e depois da criação do snapshot:
+
+*ANTES:*
+----
+[root@rhgs1 ~]# lsblk
+NAME                                                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+fd0                                                    2:0    1    4K  0 disk 
+sr0                                                   11:0    1 1024M  0 rom  
+vda                                                  252:0    0   20G  0 disk 
+├─vda1                                               252:1    0  500M  0 part /boot
+└─vda2                                               252:2    0 19.5G  0 part 
+  ├─rhgs-root                                        253:0    0 17.5G  0 lvm  /
+  └─rhgs-swap                                        253:1    0    2G  0 lvm  [SWAP]
+vdb                                                  252:16   0  100G  0 disk 
+├─GLUSTER_vg1-GLUSTER_pool1_tmeta                    253:2    0  512M  0 lvm  
+│ └─GLUSTER_vg1-GLUSTER_pool1-tpool                  253:4    0 99.5G  0 lvm  
+│   ├─GLUSTER_vg1-GLUSTER_pool1                      253:5    0 99.5G  0 lvm  
+│   ├─GLUSTER_vg1-GLUSTER_lv1                        253:6    0 99.5G  0 lvm  /gluster/brick1
+└─GLUSTER_vg1-GLUSTER_pool1_tdata                    253:3    0 99.5G  0 lvm  
+  └─GLUSTER_vg1-GLUSTER_pool1-tpool                  253:4    0 99.5G  0 lvm  
+    ├─GLUSTER_vg1-GLUSTER_pool1                      253:5    0 99.5G  0 lvm  
+    ├─GLUSTER_vg1-GLUSTER_lv1                        253:6    0 99.5G  0 lvm  /gluster/brick1
+vdc                                                  252:32   0  100G  0 disk 
+vdd                                                  252:48   0  100G  0 disk 
+----
+
+*DEPOIS:*
+----
+[root@rhgs1 ~]# lsblk
+NAME                                                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+fd0                                                    2:0    1    4K  0 disk 
+sr0                                                   11:0    1 1024M  0 rom  
+vda                                                  252:0    0   20G  0 disk 
+├─vda1                                               252:1    0  500M  0 part /boot
+└─vda2                                               252:2    0 19.5G  0 part 
+  ├─rhgs-root                                        253:0    0 17.5G  0 lvm  /
+  └─rhgs-swap                                        253:1    0    2G  0 lvm  [SWAP]
+vdb                                                  252:16   0  100G  0 disk 
+├─GLUSTER_vg1-GLUSTER_pool1_tmeta                    253:2    0  512M  0 lvm  
+│ └─GLUSTER_vg1-GLUSTER_pool1-tpool                  253:4    0 99.5G  0 lvm  
+│   ├─GLUSTER_vg1-GLUSTER_pool1                      253:5    0 99.5G  0 lvm  
+│   ├─GLUSTER_vg1-GLUSTER_lv1                        253:6    0 99.5G  0 lvm  /gluster/brick1
+│   └─GLUSTER_vg1-244fcf91891345888123a8f12e745b10_0 253:7    0 99.5G  0 lvm  /run/gluster/snaps/244fcf91891345888123a8f12e745b10/brick1
+└─GLUSTER_vg1-GLUSTER_pool1_tdata                    253:3    0 99.5G  0 lvm  
+  └─GLUSTER_vg1-GLUSTER_pool1-tpool                  253:4    0 99.5G  0 lvm  
+    ├─GLUSTER_vg1-GLUSTER_pool1                      253:5    0 99.5G  0 lvm  
+    ├─GLUSTER_vg1-GLUSTER_lv1                        253:6    0 99.5G  0 lvm  /gluster/brick1
+    └─GLUSTER_vg1-244fcf91891345888123a8f12e745b10_0 253:7    0 99.5G  0 lvm  /run/gluster/snaps/244fcf91891345888123a8f12e745b10/brick1
+vdc                                                  252:32   0  100G  0 disk 
+vdd                                                  252:48   0  100G  0 disk 
+----
+
+No client1 remova o arquivo testfile criado no exercício anterior:
+----
+[root@client1-ccd2 ~]# rm -rf /mnt/local/testfile
+----
+
+Monte o snapshot no client1:
+----
+[root@client1-ccd2 ~]# mkdir /mnt/snap
+[root@client1-ccd2 ~]# mount -t glusterfs rhgs1:/snaps/snap1/localvol /mnt/snap/
+----
+
+Veja que em `/mnt/snap` o arquivo deletado ainda existe:
+----
+[root@client1-ccd2 ~]# ll /mnt/snap/
+total 0
+-rw-r--r--. 1 root root 0 Mar 11 20:37 testfile
+----
+
+No rhgs1 veja a configuração de snapshot do volume:
+----
+[root@rhgs1 ~]# gluster snapshot config localvol
+
+Snapshot System Configuration:
+snap-max-hard-limit : 256
+snap-max-soft-limit : 90%
+auto-delete : disable
+activate-on-create : disable
+
+Snapshot Volume Configuration:
+
+Volume : localvol
+snap-max-hard-limit : 256
+Effective snap-max-hard-limit : 256
+Effective snap-max-soft-limit : 230 (90%)
+----

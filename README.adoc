@@ -10,6 +10,14 @@ link:04-access-volumes.adoc[Acessando Volumes]
 
 link:05-network-services.adoc[Serviços de Rede]
 
-link:06-georeplication.adoc[Geo Replicação]
+link:06-deploy.adoc[Deploy do Gluster usando gdeploy]
 
-link:07-snapshot.adoc[Snapshots]
+link:07-ops.adoc[Operações Comuns de Administração]
+
+link:08-georeplication.adoc[Geo Replicação]
+
+link:09-snapshot.adoc[Snapshots]
+
+link:10-quota.aodc[Quotas]
+
+link:11-webadmin.adoc[Web Admin Console]

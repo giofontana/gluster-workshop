@@ -1,0 +1,47 @@
+= Gluster Deploy
+
+== Deploy do Gluster usando gdeploy
+
+1 Acesse o ambiente:
+----
+# ssh [OPENTLC-SSO-LOGIN]@client1-[red]#_GUID_#.rhpds.opentlc.com
+[root@client1 ~]# ssh root@rhgs1
+----
+
+2 Crie e troque chaves entre os servidores:
+----
+[root@rhgs1 ~]# ssh-keygen
+[root@rhgs1 ~]# for i in 1 2 3 4
+do
+ssh-copy-id root@rhgs$i
+done
+
+[root@rhgs1 ~]# for i in 1 2
+do
+ssh-copy-id root@remote-rhgs$i
+done
+----
+
+3 Efetue o deploy base do Lab:
+----
+[root@rhgs1 ~]# cd gdeploy_conf
+[root@rhgs1 ~]# gdeploy -c local.conf
+----
+
+4 Verifique o status do cluster
+
+----
+# gluster peer status
+----
+
+5 Confirme a criação do volume glustervol
+
+----
+# gluster volume info
+----
+
+6 Deploy do segundo cluster:
+
+----
+# gdeploy -c remote.conf
+----

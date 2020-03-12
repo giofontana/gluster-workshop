@@ -1,0 +1,118 @@
+= Trabalhando com quotas
+
+== Habilitando quotas
+
+----
+[root@rhgs1 ~]# gluster volume quota localvol enable
+volume quota : success
+
+[root@rhgs1 ~]# gluster volume info localvol
+ 
+Volume Name: localvol
+Type: Distributed-Replicate
+Volume ID: 811be0b3-81e8-4327-9e76-84a72b60694c
+Status: Started
+Snapshot Count: 1
+Number of Bricks: 2 x 2 = 4
+Transport-type: tcp,rdma
+Bricks:
+Brick1: rhgs1:/gluster/brick1
+Brick2: rhgs2:/gluster/brick1
+Brick3: rhgs3:/gluster/brick1
+Brick4: rhgs4:/gluster/brick1
+Options Reconfigured:
+features.quota-deem-statfs: on
+features.inode-quota: on
+features.quota: on
+features.barrier: disable
+server.allow-insecure: on
+changelog.changelog: on
+geo-replication.ignore-pid-check: on
+geo-replication.indexing: on
+nfs.disable: on
+performance.client-io-threads: off
+----
+
+== Definindo quota
+
+No client1 execute um `df -h` para ver o tamanho do volume apresentado:
+----
+[root@client1-ccd2 ~]# df -h
+Filesystem                              Size  Used Avail Use% Mounted on
+/dev/mapper/rhel_host2cc260760b15-root   18G  1.7G   16G  10% /
+devtmpfs                                907M     0  907M   0% /dev
+tmpfs                                   919M     0  919M   0% /dev/shm
+tmpfs                                   919M  8.6M  911M   1% /run
+tmpfs                                   919M     0  919M   0% /sys/fs/cgroup
+/dev/vda1                               497M  196M  301M  40% /boot
+/dev/vdb                                 48G   44G  4.3G  92% /var/www/html/repos
+tmpfs                                   184M     0  184M   0% /run/user/0
+rhgs1:/localvol                         199G  2.1G  197G   2% /mnt/local
+remote-rhgs2:/remotevol                 199G  2.1G  197G   2% /mnt/remote
+rhgs1:/snaps/snap1/localvol             199G  2.1G  197G   2% /mnt/snap
+----
+
+Defina a quota para 1 GB
+----
+[root@rhgs1 ~]# gluster volume quota localvol limit-usage / 1GB
+volume quota : success
+----
+
+Agora execute novamente o `df -h`
+----
+[root@client1-ccd2 ~]# df -h
+Filesystem                              Size  Used Avail Use% Mounted on
+/dev/mapper/rhel_host2cc260760b15-root   18G  1.7G   16G  10% /
+devtmpfs                                907M     0  907M   0% /dev
+tmpfs                                   919M     0  919M   0% /dev/shm
+tmpfs                                   919M  8.6M  911M   1% /run
+tmpfs                                   919M     0  919M   0% /sys/fs/cgroup
+/dev/vda1                               497M  196M  301M  40% /boot
+/dev/vdb                                 48G   44G  4.3G  92% /var/www/html/repos
+tmpfs                                   184M     0  184M   0% /run/user/0
+rhgs1:/localvol                         1.0G     0  1.0G   0% /mnt/local
+remote-rhgs2:/remotevol                 199G  2.1G  197G   2% /mnt/remote
+rhgs1:/snaps/snap1/localvol             199G  2.1G  197G   2% /mnt/snap
+----
+
+== Testando a quota
+
+Para testar a quota, execute o comando abaixo:
+----
+[root@client1-ccd2 ~]# mkdir /mnt/local/quota
+[root@client1-ccd2 ~]# cd /mnt/local/quota
+[root@client1-ccd2 quota]# for i in `seq 1 15`
+> do
+> echo "Creating file$i"
+> dd if=/dev/zero of=file$i bs=1024K count=100 oflag=direct
+> done
+Creating file1
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 0.795791 s, 132 MB/s
+(...)
+Creating file13
+dd: error writing ‘file1’: Disk quota exceeded
+dd: closing output file ‘file1’: Disk quota exceeded
+----
+
+== Desabilitando a quota
+
+----
+[root@rhgs1 ~]# gluster volume quota localvol remove /
+volume quota : success
+
+----
+
+== Definindo quotas em diretórios
+
+----
+[root@rhgs1 ~]#  gluster volume quota mirrorvol limit-usage /quota 200MB
+quota command failed : Volume mirrorvol does not exist
+[root@rhgs1 ~]#  gluster volume quota localvol limit-usage /quota 200MB
+volume quota : success
+[root@rhgs1 ~]# gluster volume quota localvol list
+                  Path                   Hard-limit  Soft-limit      Used  Available  Soft-limit exceeded? Hard-limit exceeded?
+-------------------------------------------------------------------------------------------------------------------------------
+/quota                                   200.0MB     80%(160.0MB)  907.0MB  0Bytes             Yes                  Yes
+----
